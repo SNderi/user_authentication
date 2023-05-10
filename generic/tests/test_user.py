@@ -6,7 +6,7 @@ User = __import__('user').User
 
 
 print("{} class exists and it contains {} table.".format(User.__name__,
-    User.__tablename__))
+      User.__tablename__))
 
 
 class TestUser(unittest.TestCase):

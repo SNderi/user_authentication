@@ -16,6 +16,7 @@ class DB:
     Methods: _session - Memoized session object to optimize the db functions
              add_user - Method to add user to the database
              find_user_by - Method to search for a userin the database
+             update_user - Method to update user information
     """
 
     def __init__(self) -> None:
@@ -36,7 +37,12 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
-        """A method used to save a user to the database."""
+        """A method used to save a user to the database.
+        Args: email: str - New user's email
+              hashed_password: New_user's encrypted password
+        Returns: New User or None on failuure
+        """
+
         try:
             new_user = User(email=email, hashed_password=hashed_password)
             self._session.add(new_user)
@@ -44,11 +50,17 @@ class DB:
         except Exception:
             self._session.rollback()
             new_user = None
-        
+
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """Method to find a user based on given arguments"""
+        """Method to find a user based on given arguments.
+        Args: Kwargs - Key=value pairs of user information to be used
+                       in the search
+        Returns: User if found
+        Raises: NoResultFound - If user not found
+                InvalidRequestError - If key isn't a user property.
+        """
 
         for key in kwargs:
             if key not in User.__table__.columns:
@@ -61,8 +73,12 @@ class DB:
         return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        """Method to locate a user and update the user’s
-        attributes as passed in the method’s arguments."""
+        """Method to locate a user and update the user’s information.
+        Args: user_id - User id to locate them
+              kwargs - Key=value pairs with entries to change
+        Raises: ValueError - If No user is found or wrong attribute is
+                passed as key.
+        """
 
         try:
             user = self.find_user_by(id=user_id)
@@ -74,5 +90,5 @@ class DB:
                 setattr(user, key, val)
             else:
                 raise ValueError
-        
+
         self._session.commit()

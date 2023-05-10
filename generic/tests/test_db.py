@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Unittest module for the Database."""
 
 
 import unittest
@@ -14,7 +15,7 @@ class DB_test(unittest.TestCase):
     my_db = DB()
 
     def test_add_user(self):
-        """Test if the function takes in 2 strings and returns a 
+        """Test if the function takes in 2 strings and returns a
         User object with correct email and hashed_password fields
         """
 
@@ -27,18 +28,18 @@ class DB_test(unittest.TestCase):
         self.assertEqual(user_2.hashed_password, "SuperHashedPwd1")
 
     def test_find_user_by(self):
-        """Test if the function finds the correct user and returns the 
+        """Test if the function finds the correct user and returns the
         correct error message if it doesn't. """
 
         user = DB_test.my_db.add_user("test2@test.com", "SuperHashedPwd2")
-        
+
         found_user = DB_test.my_db.find_user_by(email="test2@test.com")
 
         self.assertEqual(found_user.id, user.id)
         self.assertRaises(NoResultFound, DB_test.my_db.find_user_by,
                           email="test@test.com")
         self.assertRaises(InvalidRequestError, DB_test.my_db.find_user_by,
-                         emall="test0@test.com")
+                          emall="test0@test.com")
 
     def test_update_user(self):
         """Test if the function updates user's information correctly."""
